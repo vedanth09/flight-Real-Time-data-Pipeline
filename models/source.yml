@@ -1,10 +1,10 @@
 version: 2
 
 sources:
-  - name: flight_data  # This is your dataset ID
+  - name: flight_data
     database: data-management2-458610  # Your project ID
     tables:
-      - name: live_flight_data  # This should match the actual table name for live flight data
+      - name: live_flight_cleaned  # This is your table name
         description: "This table contains real-time flight data"
-      - name: static_flight_data  # This should match the actual table name for static airport data
+      - name: static_flight_data  # This is your table name
         description: "This table contains static airport data"

@@ -14,9 +14,9 @@ WITH enriched_flight_data AS (
         lf.departure_scheduled,
         lf.ingest_datetime
     FROM
-        {{ ref('live_flight_cleaned') }} AS lf  -- Reference the live_flight_cleaned model
+        `data-management2-458610.flight_data.live_flight_cleaned` AS lf  -- Reference the live_flight_cleaned table under the correct path
     LEFT JOIN
-        {{ ref('static_flight_data') }} AS sf  -- Reference the static_flight_data model
+        `data-management2-458610.flight_data.static_flight_data` AS sf  -- Reference the static_flight_data table under the correct path
     ON
         lf.departure_airport = sf.name
 )
