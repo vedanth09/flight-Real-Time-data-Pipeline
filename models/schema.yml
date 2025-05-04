@@ -1,0 +1,244 @@
+version: 2
+
+models:
+  - name: live_flight_cleaned
+    description: "Cleaned flight data, joined with static airport data"
+    columns:
+      - name: aircraft_iata
+        description: "The IATA code of the aircraft"
+        tests:
+          - not_null
+      - name: aircraft_icao
+        description: "The ICAO code of the aircraft"
+        tests:
+          - not_null
+      - name: aircraft_icao24
+        description: "The ICAO 24-bit code of the aircraft"
+      - name: aircraft_registration
+        description: "The registration of the aircraft"
+        tests:
+          - not_null
+      - name: airline_iata
+        description: "The IATA code of the airline"
+      - name: airline_icao
+        description: "The ICAO code of the airline"
+      - name: airline_name
+        description: "The name of the airline"
+      - name: arrival_actual
+        description: "Actual arrival time"
+      - name: arrival_actual_runway
+        description: "Actual arrival runway"
+      - name: arrival_airport
+        description: "The airport of arrival"
+      - name: arrival_baggage
+        description: "Baggage claim area at arrival airport"
+      - name: arrival_delay
+        description: "Arrival delay in minutes"
+        tests:
+          - not_null
+      - name: arrival_estimated
+        description: "Estimated arrival time"
+      - name: arrival_estimated_runway
+        description: "Estimated runway for arrival"
+      - name: arrival_gate
+        description: "Arrival gate at the airport"
+      - name: arrival_iata
+        description: "Arrival IATA code"
+      - name: arrival_icao
+        description: "Arrival ICAO code"
+      - name: arrival_scheduled
+        description: "Scheduled arrival time"
+      - name: arrival_terminal
+        description: "Arrival terminal at the airport"
+      - name: arrival_timezone
+        description: "Arrival timezone"
+      - name: departure_actual
+        description: "Actual departure time"
+      - name: departure_actual_runway
+        description: "Actual departure runway"
+      - name: departure_airport
+        description: "The airport of departure"
+      - name: departure_delay
+        description: "Departure delay in minutes"
+        tests:
+          - not_null
+      - name: departure_estimated
+        description: "Estimated departure time"
+      - name: departure_estimated_runway
+        description: "Estimated departure runway"
+      - name: departure_gate
+        description: "Departure gate at the airport"
+      - name: departure_iata
+        description: "Departure IATA code"
+      - name: departure_icao
+        description: "Departure ICAO code"
+      - name: departure_scheduled
+        description: "Scheduled departure time"
+      - name: departure_terminal
+        description: "Departure terminal at the airport"
+      - name: departure_timezone
+        description: "Departure timezone"
+      - name: flight_codeshared
+        description: "Details about the flight codeshare (if applicable)"
+      - name: flight_date
+        description: "The date of the flight"
+      - name: flight_iata
+        description: "The IATA code of the flight"
+      - name: flight_icao
+        description: "The ICAO code of the flight"
+      - name: flight_number
+        description: "The flight number"
+      - name: flight_status
+        description: "The status of the flight (e.g., scheduled, cancelled)"
+      - name: live_altitude
+        description: "Altitude of the flight at the time of data update"
+        tests:
+          - not_null
+      - name: live_direction
+        description: "Direction of the flight"
+        tests:
+          - not_null
+      - name: live_is_ground
+        description: "Indicates if the flight is on the ground"
+        tests:
+          - not_null
+      - name: live_latitude
+        description: "Latitude of the flight at the time of data update"
+        tests:
+          - not_null
+      - name: live_longitude
+        description: "Longitude of the flight at the time of data update"
+        tests:
+          - not_null
+      - name: live_speed_horizontal
+        description: "Horizontal speed of the flight"
+        tests:
+          - not_null
+      - name: live_speed_vertical
+        description: "Vertical speed of the flight"
+        tests:
+          - not_null
+      - name: live_updated
+        description: "Timestamp of when the flight data was last updated"
+        tests:
+          - not_null
+      - name: ingest_datetime
+        description: "Timestamp when the data was ingested"
+        tests:
+          - not_null
+
+  - name: static_flight_data
+    description: "Static flight data from airport information"
+    columns:
+      - name: id
+        description: "Unique identifier for the airport data"
+      - name: ident
+        description: "The identifier code for the airport"
+      - name: type
+        description: "The type of airport (e.g., international, domestic)"
+      - name: name
+        description: "Name of the airport"
+      - name: latitude_deg
+        description: "Latitude of the airport"
+      - name: longitude_deg
+        description: "Longitude of the airport"
+      - name: elevation_ft
+        description: "Elevation of the airport in feet"
+      - name: continent
+        description: "The continent the airport is located in"
+      - name: iso_country
+        description: "ISO country code for the airport"
+      - name: iso_region
+        description: "ISO region code for the airport"
+      - name: municipality
+        description: "The municipality where the airport is located"
+      - name: scheduled_service
+        description: "Indicates whether the airport has scheduled services"
+      - name: gps_code
+        description: "GPS code of the airport"
+      - name: local_code
+        description: "Local code for the airport"
+
+  - name: merge_flight_data
+    description: "Merged dataset combining live flight data with static airport data"
+    columns:
+      - name: flight_id
+        description: "Unique identifier for the flight"
+      - name: airline_id
+        description: "ID of the airline operating the flight"
+      - name: airport_id
+        description: "ID of the airport"
+      - name: flight_date
+        description: "The date of the flight"
+      - name: flight_status
+        description: "Status of the flight (e.g., scheduled, cancelled)"
+      - name: departure_time
+        description: "Scheduled departure time"
+      - name: arrival_time
+        description: "Scheduled arrival time"
+      - name: airport_name
+        description: "Name of the airport"
+      - name: country
+        description: "Country where the airport is located"
+      - name: region
+        description: "Region where the airport is located"
+      - name: airport_code
+        description: "Code of the airport (e.g., JFK)"
+      - name: departure_airport
+        description: "The airport of departure"
+      - name: arrival_airport
+        description: "The airport of arrival"
+      - name: departure_delay
+        description: "Departure delay in minutes"
+      - name: arrival_delay
+        description: "Arrival delay in minutes"
+
+  - name: dim_airline
+    description: "Dimension table for airline information"
+    columns:
+      - name: airline_iata
+        description: "The IATA code of the airline"
+      - name: airline_icao
+        description: "The ICAO code of the airline"
+      - name: airline_name
+        description: "The name of the airline"
+
+  - name: dim_airport
+    description: "Dimension table for airport information"
+    columns:
+      - name: airport_name
+        description: "The name of the airport"
+      - name: airport_iata
+        description: "IATA code for the airport"
+      - name: airport_icao
+        description: "ICAO code for the airport"
+
+  - name: dim_flight
+    description: "Dimension table for flight information"
+    columns:
+      - name: flight_iata
+        description: "The IATA code of the flight"
+      - name: flight_icao
+        description: "The ICAO code of the flight"
+      - name: flight_number
+        description: "Flight number"
+      - name: flight_status
+        description: "Status of the flight"
+      - name: flight_date
+        description: "Date of the flight"
+
+  - name: fact_flight
+    description: "Fact table containing flight metrics"
+    columns:
+      - name: departure_delay
+        description: "Departure delay in minutes"
+      - name: arrival_delay
+        description: "Arrival delay in minutes"
+      - name: live_speed_horizontal
+        description: "Horizontal speed of the flight"
+      - name: live_speed_vertical
+        description: "Vertical speed of the flight"
+      - name: live_altitude
+        description: "Altitude of the flight"
+      - name: live_is_ground
+        description: "Indicates if the flight is on the ground"
