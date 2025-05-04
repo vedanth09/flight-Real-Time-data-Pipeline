@@ -1,3 +1,5 @@
+-- models/live_flight_cleaned.sql
+
 WITH raw_flight_data AS (
     SELECT
         flight_iata,
@@ -22,7 +24,7 @@ WITH raw_flight_data AS (
         live_updated,
         ingest_datetime
     FROM
-        `data-management2-458610.flight_data.live_flight_cleaned`  -- Ensure this dataset and table exist
+        `data-management2-458610.flight_data.live_flight_cleaned`
 ),
 cleaned_flight_data AS (
     SELECT
@@ -38,16 +40,16 @@ cleaned_flight_data AS (
         CAST(arrival_scheduled AS TIMESTAMP) AS arrival_scheduled,
         COALESCE(departure_actual, '1970-01-01 00:00:00') AS departure_actual,
         COALESCE(arrival_actual, '1970-01-01 00:00:00') AS arrival_actual,
-        
-        -- Handle "N/A" values and cast to FLOAT64
-        CAST(CASE WHEN live_latitude = 'N/A' THEN NULL ELSE live_latitude END AS FLOAT64) AS live_latitude,
-        CAST(CASE WHEN live_longitude = 'N/A' THEN NULL ELSE live_longitude END AS FLOAT64) AS live_longitude,
-        CAST(CASE WHEN live_speed_horizontal = 'N/A' THEN NULL ELSE live_speed_horizontal END AS FLOAT64) AS live_speed_horizontal,
-        CAST(CASE WHEN live_speed_vertical = 'N/A' THEN NULL ELSE live_speed_vertical END AS FLOAT64) AS live_speed_vertical,
-        
-        -- CAST live_altitude to FLOAT64 to handle decimal values like 335.28
-        CAST(CASE WHEN live_altitude = 'N/A' THEN NULL ELSE live_altitude END AS FLOAT64) AS live_altitude,
-        
+
+        -- Handle "N/A" values properly
+        CAST(CASE WHEN CAST(live_latitude AS STRING) = 'N/A' OR live_latitude IS NULL THEN NULL ELSE live_latitude END AS FLOAT64) AS live_latitude,
+        CAST(CASE WHEN CAST(live_longitude AS STRING) = 'N/A' OR live_longitude IS NULL THEN NULL ELSE live_longitude END AS FLOAT64) AS live_longitude,
+        CAST(CASE WHEN CAST(live_speed_horizontal AS STRING) = 'N/A' OR live_speed_horizontal IS NULL THEN NULL ELSE live_speed_horizontal END AS FLOAT64) AS live_speed_horizontal,
+        CAST(CASE WHEN CAST(live_speed_vertical AS STRING) = 'N/A' OR live_speed_vertical IS NULL THEN NULL ELSE live_speed_vertical END AS FLOAT64) AS live_speed_vertical,
+
+        -- Handle live_altitude and cast to FLOAT64
+        CAST(CASE WHEN CAST(live_altitude AS STRING) = 'N/A' OR live_altitude IS NULL THEN NULL ELSE live_altitude END AS FLOAT64) AS live_altitude,
+
         live_is_ground,
         live_direction,
         live_updated,
