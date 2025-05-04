@@ -1,18 +1,17 @@
 import requests
 import json
 from google.cloud import storage  # To interact with GCS
-import os
 
-# Set up Google Cloud Storage client (assuming your environment is set up with GCP credentials)
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/Users/vedanth/Desktop/data-management2-458610-6f1b53103d6b.json"
+# Initialize the GCS client. Google Cloud Functions will automatically authenticate using the IAM role.
 storage_client = storage.Client()
 
 def fetch_flight_data():
+    # Define the API endpoint and parameters
     url = "http://api.aviationstack.com/v1/flights"
     params = {
-        "access_key": "63c376e09b8f45e7b1ff843ab2b40fa8"
+        "access_key": "63c376e09b8f45e7b1ff843ab2b40fa8"  # Use your actual API key here
     }
-    
+
     try:
         print("Collecting data... Please wait.")
         response = requests.get(url, params=params)
@@ -83,7 +82,7 @@ def fetch_flight_data():
                 "live_speed_vertical": live.get("speed_vertical", "N/A") if live else "N/A",
                 "live_is_ground": live.get("is_ground", "N/A") if live else "N/A"
             })
-        
+
         return flight_data
     except requests.exceptions.RequestException as e:
         print(f"Error fetching data: {e}")
